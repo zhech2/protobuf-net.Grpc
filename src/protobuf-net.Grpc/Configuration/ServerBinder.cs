@@ -74,7 +74,9 @@ namespace ProtoBuf.Grpc.Configuration
 
                     if (argsBuffer == null)
                     {
-                        argsBuffer = new object?[] { null, null, null, null, null, null, binderConfiguration!.MarshallerCache, service == null ? null : Expression.Constant(service, serviceType) };
+                        var marshallerFactory = new ValueTypeWrapperMarshallerFactory(binderConfiguration!.MarshallerCache);
+                        var marshallerCache = new MarshallerCache(new[] { marshallerFactory });
+                        argsBuffer = new object?[] { null, null, null, null, null, null, marshallerCache, service == null ? null : Expression.Constant(service, serviceType) };
                     }
                     argsBuffer[0] = serviceName;
                     argsBuffer[1] = on;
