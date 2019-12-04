@@ -193,7 +193,7 @@ namespace ProtoBuf.Grpc.Internal
 
             if (!s_signaturePatterns.TryGetValue(signature, out var config)) return false;
 
-            static Type GetTupledType(Type[] types)
+            static Type GetTupledType(params Type[] types)
             {
                 return types.Length switch
                 {
@@ -210,8 +210,21 @@ namespace ProtoBuf.Grpc.Internal
                 };
             }
 
-            Type? arg0Type = dataArgsTypes.Length > 1 ? GetTupledType(dataArgsTypes) :
-                args.Length > 0 ? args[0].ParameterType : null;
+            Type? arg0Type = null;
+            if (dataArgsTypes.Length > 1)
+                arg0Type = GetTupledType(dataArgsTypes);
+            else if ((dataArgsTypes.Length == 1 && !dataArgsTypes[0].IsClass))
+                arg0Type = typeof(ValueTypeWrapper<>).MakeGenericType(dataArgsTypes[0]);
+            else if (args.Length > 0)
+                arg0Type = args[0].ParameterType;
+
+            Type retType = method.ReturnType;
+            if (signature.Ret == TypeCategory.Data && !retType.IsClass)
+                retType = typeof(ValueTypeWrapper<>).MakeGenericType(retType);
+            else if (signature.Ret == TypeCategory.TypedTask && !retType.GetGenericArguments()[0].IsClass)
+                retType = typeof(Task<>).MakeGenericType(typeof(ValueTypeWrapper<>).MakeGenericType(retType.GetGenericArguments()[0]));
+            else if (signature.Ret == TypeCategory.TypedValueTask && !retType.GetGenericArguments()[0].IsClass)
+                retType = typeof(ValueTask<>).MakeGenericType(typeof(ValueTypeWrapper<>).MakeGenericType(retType.GetGenericArguments()[0]));
 
             (Type type, TypeCategory category) GetTypeByIndex(int index)
             {
@@ -220,7 +233,7 @@ namespace ProtoBuf.Grpc.Internal
                     0 => (arg0Type!, signature.Arg0),
                     1 => (args[1].ParameterType, signature.Arg1),
                     2 => (args[2].ParameterType, signature.Arg2),
-                    RET => (method.ReturnType, signature.Ret),
+                    RET => (retType, signature.Ret),
                     VOID => (typeof(void), TypeCategory.Void),
                     _ => throw new IndexOutOfRangeException(nameof(index)),
                 };
