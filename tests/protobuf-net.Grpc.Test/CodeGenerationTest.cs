@@ -133,6 +133,7 @@ namespace protobuf_net.Grpc.Test
                 p.ParameterType == typeof(string) ||
                 p.ParameterType == typeof(long) ||
                 p.ParameterType == typeof(DateTime) ||
+                p.ParameterType == typeof(IList<DateTime>) ||
                 p.ParameterType == typeof(HelloRequest)));
 
             var builder = ServerServiceDefinition.CreateBuilder();
@@ -154,7 +155,8 @@ namespace protobuf_net.Grpc.Test
                     p.ParameterType == typeof(HelloRequest) ? (object)new HelloRequest { Name = "John" } :
                     p.ParameterType == typeof(string) ? (object)"John" :
                     p.ParameterType == typeof(long) ? (object)42 :
-                    p.ParameterType == typeof(DateTime) ? (object)DateTime.Now : null)
+                    p.ParameterType == typeof(DateTime) ? (object)DateTime.Now :
+                    p.ParameterType == typeof(IList<DateTime>) ? (object)new[] { DateTime.Now } : null)
                 .ToArray();
 
             var result = method.Invoke(proxy, parameters);
@@ -180,6 +182,15 @@ namespace protobuf_net.Grpc.Test
                     break;
                 case ValueTask<long> replyTask:
                     Assert.Equal(expectedLong, await replyTask);
+                    break;
+                case IList<long> reply:
+                    Assert.Equal(new[] { expectedLong }, reply);
+                    break;
+                case Task<IList<long>> replyTask:
+                    Assert.Equal(new[] { expectedLong }, await replyTask);
+                    break;
+                case ValueTask<IList<long>> replyTask:
+                    Assert.Equal(new[] { expectedLong }, await replyTask);
                     break;
                 case Task task:
                     // a Task<something_unexpected> derives from Task, so would match here

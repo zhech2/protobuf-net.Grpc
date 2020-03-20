@@ -45,11 +45,7 @@ namespace ProtoBuf.Grpc.Internal
             Expression callExpression;
             if (parameters.Length == callContext + 1)
             {
-                if (parameters[0].ParameterType.IsClass)
-                {
-                    callExpression = Expression.Call(instance, method, args);
-                }
-                else
+                if (parameters[0].ParameterType.IsValueType)
                 {
                     // then the parameter should be wrapped in a ValueTypeWrapper
                     var valueField = args[0].Type.GetField("Value");
@@ -57,6 +53,10 @@ namespace ProtoBuf.Grpc.Internal
                     var actualArgs = new[] { unwrappedArg }.Concat(args.Skip(1)).ToArray();
 
                     callExpression = Expression.Call(instance, method, actualArgs);
+                }
+                else
+                {
+                    callExpression = Expression.Call(instance, method, args);
                 }
             }
             else
@@ -90,7 +90,7 @@ namespace ProtoBuf.Grpc.Internal
                  callResult.Type.GetGenericTypeDefinition() == typeof(ValueTask<>)))
             {
                 var underlyingType = callResult.Type.GetGenericArguments().First();
-                if (underlyingType.IsClass)
+                if (!underlyingType.IsValueType)
                     return callResult;
 
                 var isValueTask = callResult.Type.GetGenericTypeDefinition() == typeof(ValueTask<>);
@@ -113,7 +113,7 @@ namespace ProtoBuf.Grpc.Internal
                 return Expression.New(targetValueTaskConstructor, continuation);
             }
 
-            if (callResult.Type.IsClass)
+            if (!callResult.Type.IsValueType)
                 return callResult;
 
             var valueTypeWrapperReturnTypeConstructor = typeof(ValueTypeWrapper<>).MakeGenericType(callResult.Type).GetConstructor(new[] { callResult.Type });

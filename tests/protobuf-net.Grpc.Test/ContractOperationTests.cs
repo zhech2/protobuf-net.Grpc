@@ -189,6 +189,7 @@ namespace protobuf_net.Grpc.Test
         [InlineData(nameof(ILegacyService.Shared_Legacy_BlockingUnary_ValVoid), typeof(Tuple<string, long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Sync, (int)VoidKind.Response)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_BlockingUnary_ValueTypeVoid), typeof(ValueTypeWrapper<long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Sync, (int)VoidKind.Response)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_BlockingUnary_ValueTypeValueType), typeof(ValueTypeWrapper<DateTime>), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Sync, (int)VoidKind.None)]
+        [InlineData(nameof(ILegacyService.Shared_Legacy_BlockingUnary_IListValueTypeIListValueType), typeof(IList<DateTime>), typeof(IList<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Sync, (int)VoidKind.None)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_BlockingUnary_VoidValueType), typeof(Empty), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Sync, (int)VoidKind.Request)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary), typeof(Tuple<string, long>), typeof(HelloReply), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.None)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary_ValVoid), typeof(Tuple<string, long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.Response)]
@@ -196,9 +197,11 @@ namespace protobuf_net.Grpc.Test
         [InlineData(nameof(ILegacyService.Shared_Legacy_ValueTaskUnary_ValVoid), typeof(Tuple<string, long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.ValueTask, (int)VoidKind.Response)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary_ValueTypeVoid), typeof(ValueTypeWrapper<long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.Response)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary_ValueTypeValueType), typeof(ValueTypeWrapper<DateTime>), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.None)]
+        [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary_IListValueTypeIListValueType), typeof(IList<DateTime>), typeof(IList<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.None)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_TaskUnary_VoidValueType), typeof(Empty), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.Task, (int)VoidKind.Request)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_ValueTaskUnary_ValueTypeVoid), typeof(ValueTypeWrapper<long>), typeof(Empty), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.ValueTask, (int)VoidKind.Response)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_ValueTaskUnary_ValueTypeValueType), typeof(ValueTypeWrapper<DateTime>), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.ValueTask, (int)VoidKind.None)]
+        [InlineData(nameof(ILegacyService.Shared_Legacy_ValueTaskUnary_IListValueTypeIListValueType), typeof(IList<DateTime>), typeof(IList<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.ValueTask, (int)VoidKind.None)]
         [InlineData(nameof(ILegacyService.Shared_Legacy_ValueTaskUnary_VoidValueType), typeof(Empty), typeof(ValueTypeWrapper<long>), MethodType.Unary, (int)ContextKind.NoContext, (int)ResultKind.ValueTask, (int)VoidKind.Request)]
         public void CheckLegacyMethodIdentification(string name, Type from, Type to, MethodType methodType, int context, int result, int @void)
         {

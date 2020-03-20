@@ -315,7 +315,7 @@ namespace ProtoBuf.Grpc.Internal
 
                                                 EmitTupleConstructor(il, pTypes); // request as a new Tuple<>
                                             }
-                                            else if (pTypes.Length == 1 && !pTypes[0].IsClass)
+                                            else if (pTypes.Length == 1 && pTypes[0].IsValueType)
                                             {
                                                 il.Emit(OpCodes.Ldarg_1); // unwrapped request
                                                 var constructor = typeof(ValueTypeWrapper<>).MakeGenericType(pTypes[0]).GetConstructors().Single();
@@ -334,14 +334,14 @@ namespace ProtoBuf.Grpc.Internal
                                     il.Emit(OpCodes.Ldnull); // host (always null)
                                     il.EmitCall(OpCodes.Call, method, null);
                                     // similar logic than in ContractOperation.GetSignature : look at the implemented method return type
-                                    if (op.Result == ResultKind.Sync && !op.VoidResponse && !retType.IsClass)
+                                    if (op.Result == ResultKind.Sync && !op.VoidResponse && retType.IsValueType)
                                     {
                                         var retValueTypeWrapperType = typeof(ValueTypeWrapper<>).MakeGenericType(retType);
                                         var valueField = retValueTypeWrapperType.GetField("Value");
                                         il.Emit(OpCodes.Ldfld, valueField);
                                     }
                                     else if ((op.Result == ResultKind.Task || op.Result == ResultKind.ValueTask) &&
-                                             !op.VoidResponse && !retType.GetGenericArguments()[0].IsClass)
+                                             !op.VoidResponse && retType.GetGenericArguments()[0].IsValueType)
                                     {
                                         var adapter = ValueTypeWrapperTaskAdapter(retType);
                                         il.EmitCall(OpCodes.Call, adapter, null);

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ServiceModel;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace protobuf_net.Grpc.Test
         // blocking, ValueType
         void Shared_Legacy_BlockingUnary_ValueTypeVoid(long arg);
         long Shared_Legacy_BlockingUnary_ValueTypeValueType(DateTime arg);
+        IList<long> Shared_Legacy_BlockingUnary_IListValueTypeIListValueType(IList<DateTime> arg);
         long Shared_Legacy_BlockingUnary_VoidValueType();
 
         // async, multiple arguments
@@ -30,9 +32,11 @@ namespace protobuf_net.Grpc.Test
         // async, ValueType
         Task Shared_Legacy_TaskUnary_ValueTypeVoid(long arg);
         Task<long> Shared_Legacy_TaskUnary_ValueTypeValueType(DateTime arg);
+        Task<IList<long>> Shared_Legacy_TaskUnary_IListValueTypeIListValueType(IList<DateTime> arg);
         Task<long> Shared_Legacy_TaskUnary_VoidValueType();
         ValueTask Shared_Legacy_ValueTaskUnary_ValueTypeVoid(long arg);
         ValueTask<long> Shared_Legacy_ValueTaskUnary_ValueTypeValueType(DateTime arg);
+        ValueTask<IList<long>> Shared_Legacy_ValueTaskUnary_IListValueTypeIListValueType(IList<DateTime> arg);
         ValueTask<long> Shared_Legacy_ValueTaskUnary_VoidValueType();
     }
 }

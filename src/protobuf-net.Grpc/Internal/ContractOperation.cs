@@ -213,17 +213,17 @@ namespace ProtoBuf.Grpc.Internal
             Type? arg0Type = null;
             if (dataArgsTypes.Length > 1)
                 arg0Type = GetTupledType(dataArgsTypes);
-            else if ((dataArgsTypes.Length == 1 && !dataArgsTypes[0].IsClass))
+            else if ((dataArgsTypes.Length == 1 && dataArgsTypes[0].IsValueType))
                 arg0Type = typeof(ValueTypeWrapper<>).MakeGenericType(dataArgsTypes[0]);
             else if (args.Length > 0)
                 arg0Type = args[0].ParameterType;
 
             Type retType = method.ReturnType;
-            if (signature.Ret == TypeCategory.Data && !retType.IsClass)
+            if (signature.Ret == TypeCategory.Data && retType.IsValueType)
                 retType = typeof(ValueTypeWrapper<>).MakeGenericType(retType);
-            else if (signature.Ret == TypeCategory.TypedTask && !retType.GetGenericArguments()[0].IsClass)
+            else if (signature.Ret == TypeCategory.TypedTask && retType.GetGenericArguments()[0].IsValueType)
                 retType = typeof(Task<>).MakeGenericType(typeof(ValueTypeWrapper<>).MakeGenericType(retType.GetGenericArguments()[0]));
-            else if (signature.Ret == TypeCategory.TypedValueTask && !retType.GetGenericArguments()[0].IsClass)
+            else if (signature.Ret == TypeCategory.TypedValueTask && retType.GetGenericArguments()[0].IsValueType)
                 retType = typeof(ValueTask<>).MakeGenericType(typeof(ValueTypeWrapper<>).MakeGenericType(retType.GetGenericArguments()[0]));
 
             (Type type, TypeCategory category) GetTypeByIndex(int index)
